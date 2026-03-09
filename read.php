@@ -1,39 +1,20 @@
 <?php
+
 include 'connection.php';
 
-// 1. AMBIL ID DARI URL
+if(isset($_GET['id'])){
 $id = $_GET['id'];
 
-// 2. TARIK DATA LAMA UNTUK DITAMPILKAN DI FORM
-$query = mysqli_query($connection, "SELECT * FROM produk WHERE id_produk = '$id'");
+$query = mysqli_query($connection, "SELECT * FROM produk Where id_produk = '$id'");
 $data  = mysqli_fetch_assoc($query);
 
-// Jika ID tidak ditemukan, balikkan ke index
-if (mysqli_num_rows($query) < 1) {
-    header("Location: index.php");
-}
-
-// 3. PROSES UPDATE SAAT TOMBOL DIKLIK
-if (isset($_POST['update'])) {
-    $kode     = $_POST['kode_produk'];
-    $nama     = $_POST['nama_produk'];
-    $kategori = $_POST['kategori'];
-    $harga    = $_POST['harga_jual'];
-    $stok     = $_POST['stok'];
-
-    $sql = "UPDATE produk SET 
-            kode_produk = '$kode',
-            nama_produk = '$nama', 
-            kategori    = '$kategori', 
-            harga_jual  = '$harga', 
-            stok        = '$stok' 
-            WHERE id_produk = '$id'";
-
-    if (mysqli_query($connection, $sql)) {
-        header("Location: index.php?status=update_berhasil");
-    } else {
-        echo "Gagal mengupdate: " . mysqli_error($koneksi);
-    }
+  if(!$data){
+    echo "<script>alert('Data tidak ditemukan!'); window.location='index.php';</script>";
+    exit;
+  }
+}else {
+  header("Location: index.php?status");
+  exit;
 }
 ?>
 
@@ -41,7 +22,7 @@ if (isset($_POST['update'])) {
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Produk - CALT</title>
+    <title>Detail Produk - CALT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { 
@@ -65,23 +46,23 @@ if (isset($_POST['update'])) {
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card p-4">
-                <h3 class="text-center mb-4 fw-bold">Edit Produk</h3>
+                <h3 class="text-center mb-4 fw-bold">Detail Produk</h3>
                 
                 <form action="" method="POST">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kode Produk</label>
-                        <input type="text" name="kode_produk" class="form-control" value="<?php echo $data['kode_produk']; ?>" require>
+                        <input type="text" name="kode_produk" class="form-control" value="<?php echo $data['kode_produk']; ?>" readonly>
                     
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nama Produk</label>
-                        <input type="text" name="nama_produk" class="form-control" value="<?php echo $data['nama_produk']; ?>" require>
+                        <input type="text" name="nama_produk" class="form-control" value="<?php echo $data['nama_produk']; ?>" readonly>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kategori</label>
-                        <select name="kategori" class="form-select" require>
+                        <select name="kategori" class="form-select" readonly>
                             <option value="Elektronik" <?php echo ($data['kategori'] == 'Elektronik') ? 'selected' : ''; ?>>Elektronik</option>
                             <option value="Pakaian" <?php echo ($data['kategori'] == 'Pakaian') ? 'selected' : ''; ?>>Pakaian</option>
                             <option value="Alat Tulis" <?php echo ($data['kategori'] == 'Alat Tulis') ? 'selected' : ''; ?>>Alat Tulis</option>
@@ -92,17 +73,16 @@ if (isset($_POST['update'])) {
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Harga Jual</label>
-                            <input type="number" name="harga_jual" class="form-control" value="<?php echo $data['harga_jual']; ?>" require>
+                            <input type="number" name="harga_jual" class="form-control" value="<?php echo $data['harga_jual']; ?>" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Stok</label>
-                            <input type="number" name="stok" class="form-control" value="<?php echo $data['stok']; ?>" require>
+                            <input type="number" name="stok" class="form-control" value="<?php echo $data['stok']; ?>" readonly>
                         </div>
                     </div>
 
                     <div class="d-grid gap-2 mt-3">
-                        <button type="submit" name="update" class="btn btn-warning">Update Data</button>
-                        <a href="index.php" class="btn btn-outline-secondary">Batal</a>
+                        <a href="index.php" class="btn btn-outline-secondary">Kembali</a>
                     </div>
                 </form>
             </div>

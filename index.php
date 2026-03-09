@@ -57,14 +57,15 @@ include 'connection.php'; // Menghubungkan ke database
                     while($row = mysqli_fetch_assoc($result)) {
                         echo "<tr>
                                 <td>" . $no++ . "</td>
-                                <td>" . $row['id_produk'] . "</td>
+                                <td>" . $row['kode_produk'] . "</td>
                                 <td>" . $row['nama_produk'] . "</td>
                                 <td>" . $row['kategori'] . "</td>
                                 <td>" . $row['stok'] . "</td>
                                 <td>Rp " . number_format($row['harga_jual'], 0, ',', '.') . "</td>
                                 <td>
-                                    <a href='edit_produk.php?id=" . $row['id_produk'] . "' class='btn btn-sm btn-warning'>Edit</a>
-                                    <a href='hapus_produk.php?id=" . $row['id_produk'] . "' class='btn btn-sm btn-danger' onclick='return confirm(\"Yakin hapus?\")'>Hapus</a>
+                                    <a href='read.php?id=" . $row['id_produk'] . "' class='btn btn-sm btn-info text-white'>Detail</a>
+                                    <a href='edit.php?id=" . $row['id_produk'] . "' class='btn btn-sm btn-warning'>Edit</a>
+                                    <a href='delete.php?id=" . $row['id_produk'] . "' class='btn btn-sm btn-danger' onclick='return confirm(\"Yakin hapus?\")'>Hapus</a>
                                 </td>
                               </tr>";
                     }
