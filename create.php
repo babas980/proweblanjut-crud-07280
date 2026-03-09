@@ -1,22 +1,19 @@
 
 <?php
-include 'connection.php'; // Hubungkan ke database
+include 'connection.php'; 
 
-// Cek apakah tombol Simpan sudah diklik
 if (isset($_POST['simpan'])) {
-    // Ambil data dari form
+
     $kode     = $_POST['kode_produk'];
     $nama     = $_POST['nama_produk'];
     $kategori = $_POST['kategori'];
     $harga    = $_POST['harga_jual'];
     $stok     = $_POST['stok'];
 
-    // Query INSERT ke database
-    $sql = "INSERT INTO produk (id_produk, nama_produk, kategori, harga_jual, stok) 
+    $sql = "INSERT INTO produk (kode_produk, nama_produk, kategori, harga_jual, stok) 
             VALUES ('$kode', '$nama', '$kategori', '$harga', '$stok')";
 
     if (mysqli_query($connection, $sql)) {
-        // Jika berhasil, lempar balik ke halaman index.php
         header("Location: index.php?status=sukses");
     } else {
         echo "Error: " . mysqli_error($koneksi);
