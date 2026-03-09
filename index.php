@@ -29,7 +29,7 @@ include 'connection.php'; // Menghubungkan ke database
             <h3>Daftar Stok Produk</h3>
         </div>
         <div class="col-md-6 text-end">
-            <a href="tambah_produk.php" class="btn btn-primary">+ Tambah Produk</a>
+            <a href="create.php" class="btn btn-primary">+ Tambah Produk</a>
         </div>
     </div>
 
@@ -57,7 +57,7 @@ include 'connection.php'; // Menghubungkan ke database
                     while($row = mysqli_fetch_assoc($result)) {
                         echo "<tr>
                                 <td>" . $no++ . "</td>
-                                <td>" . $row['kode_produk'] . "</td>
+                                <td>" . $row['id_produk'] . "</td>
                                 <td>" . $row['nama_produk'] . "</td>
                                 <td>" . $row['kategori'] . "</td>
                                 <td>" . $row['stok'] . "</td>
