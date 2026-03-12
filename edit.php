@@ -1,19 +1,24 @@
 <?php
 include 'connection.php';
 
-// 1. AMBIL ID DARI URL
-$id = $_GET['id'];
+// Ambil id dari url 
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
 
-// 2. TARIK DATA LAMA UNTUK DITAMPILKAN DI FORM
-$query = mysqli_query($connection, "SELECT * FROM produk WHERE id_produk = '$id'");
-$data  = mysqli_fetch_assoc($query);
+    $stmt = $conn->prepare("SELECT * FROM produk WHERE id_produk = ?");
+    $stmt->execute([$id]);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Jika ID tidak ditemukan, balikkan ke index
-if (mysqli_num_rows($query) < 1) {
-    header("Location: index.php");
+    if (!$data) {
+        header("Location: dashboard.php");
+        exit;
+    }
+} else {
+    header("Location: dashboard.php");
+    exit;
 }
 
-// 3. PROSES UPDATE SAAT TOMBOL DIKLIK
+// Proses update
 if (isset($_POST['update'])) {
     $kode     = $_POST['kode_produk'];
     $nama     = $_POST['nama_produk'];
@@ -21,18 +26,24 @@ if (isset($_POST['update'])) {
     $harga    = $_POST['harga_jual'];
     $stok     = $_POST['stok'];
 
-    $sql = "UPDATE produk SET 
-            kode_produk = '$kode',
-            nama_produk = '$nama', 
-            kategori    = '$kategori', 
-            harga_jual  = '$harga', 
-            stok        = '$stok' 
-            WHERE id_produk = '$id'";
-
-    if (mysqli_query($connection, $sql)) {
-        header("Location: index.php?status=update_berhasil");
-    } else {
-        echo "Gagal mengupdate: " . mysqli_error($koneksi);
+    try {
+        $sql = "UPDATE produk SET 
+                kode_produk = ?, 
+                nama_produk = ?, 
+                kategori    = ?, 
+                harga_jual  = ?, 
+                stok        = ? 
+                WHERE id_produk = ?";
+        
+        $stmt_update = $conn->prepare($sql);
+        $params = [$kode, $nama, $kategori, $harga, $stok, $id];
+        
+        if ($stmt_update->execute($params)) {
+            header("Location: dashboard.php?status=update_berhasil");
+            exit;
+        }
+    } catch (PDOException $e) {
+        echo "Gagal mengupdate: " . $e->getMessage();
     }
 }
 ?>
@@ -70,21 +81,22 @@ if (isset($_POST['update'])) {
                 <form action="" method="POST">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kode Produk</label>
-                        <input type="text" name="kode_produk" class="form-control" value="<?php echo $data['kode_produk']; ?>" require>
-                    
+                        <input type="text" name="kode_produk" class="form-control" value="<?php echo $data['kode_produk']; ?>" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nama Produk</label>
-                        <input type="text" name="nama_produk" class="form-control" value="<?php echo $data['nama_produk']; ?>" require>
+                        <input type="text" name="nama_produk" class="form-control" value="<?php echo $data['nama_produk']; ?>" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kategori</label>
-                        <select name="kategori" class="form-select" require>
-                            <option value="Elektronik" <?php echo ($data['kategori'] == 'Elektronik') ? 'selected' : ''; ?>>Elektronik</option>
-                            <option value="Pakaian" <?php echo ($data['kategori'] == 'Pakaian') ? 'selected' : ''; ?>>Pakaian</option>
-                            <option value="Alat Tulis" <?php echo ($data['kategori'] == 'Alat Tulis') ? 'selected' : ''; ?>>Alat Tulis</option>
+                        <select name="kategori" class="form-select" required>
+                            <option value="Smartphone" <?php echo ($data['kategori'] == 'Smartphone') ? 'selected' : ''; ?>>Smartphone</option>
+                            <option value="Laptop" <?php echo ($data['kategori'] == 'Laptop') ? 'selected' : ''; ?>>Laptop</option>
+                            <option value="Aksesoris" <?php echo ($data['kategori'] == 'Aksesoris') ? 'selected' : ''; ?>>Aksesoris</option>
+                            <option value="Komponen PC" <?php echo ($data['kategori'] == 'Komponen PC') ? 'selected' : ''; ?>>Komponen PC</option>
+                            <option value="Perangkat Input" <?php echo ($data['kategori'] == 'Perangkat Input') ? 'selected' : ''; ?>>Perangkat Input</option>
                             <option value="Lainnya" <?php echo ($data['kategori'] == 'Lainnya') ? 'selected' : ''; ?>>Lainnya</option>
                         </select>
                     </div>
@@ -92,17 +104,17 @@ if (isset($_POST['update'])) {
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Harga Jual</label>
-                            <input type="number" name="harga_jual" class="form-control" value="<?php echo $data['harga_jual']; ?>" require>
+                            <input type="number" name="harga_jual" class="form-control" value="<?php echo $data['harga_jual']; ?>" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Stok</label>
-                            <input type="number" name="stok" class="form-control" value="<?php echo $data['stok']; ?>" require>
+                            <input type="number" name="stok" class="form-control" value="<?php echo $data['stok']; ?>" required>
                         </div>
                     </div>
 
                     <div class="d-grid gap-2 mt-3">
                         <button type="submit" name="update" class="btn btn-warning">Update Data</button>
-                        <a href="index.php" class="btn btn-outline-secondary">Batal</a>
+                        <a href="dashboard.php" class="btn btn-outline-secondary">Batal</a>
                     </div>
                 </form>
             </div>
