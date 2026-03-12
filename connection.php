@@ -1,25 +1,24 @@
- <?php
-  $host = "localhost";
-  $user = "root";
-  $pass = "";
-  $db = "inventory_pwl";
+<?php
+try {
+    $host     = "localhost";
+    $dbname   = "inventory_pwl";   
+    $username = "root";     
+    $password = "";           
 
-  $connection = mysqli_connect($host,$user,$pass,$db);
+    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+} catch (PDOException $e) {
+    die("Koneksi Gagal: " . $e->getMessage());
+}
 
-  if(!$connection){
-    die("koneksi ke database gagal" . mysqli_connect_error());
-  }
-
-  function secure($data) {
-    global $koneksi;
-    // Menghapus spasi di awal dan akhir
+function secure($data) {
+    //keamanan dengan menghapus spasi di awal dan akhir, backslashes, dan mecegah xss
     $data = trim($data);
-    // Menghapus backslashes
     $data = stripslashes($data);
-    // Mengubah karakter khusus menjadi entitas HTML (mencegah XSS)
-    $data = htmlspecialchars($data);
-    // Menghindari karakter aneh untuk SQL Injection
-    $data = mysqli_real_escape_string($koneksi, $data);
+    $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+    
     return $data;
 }
 ?>

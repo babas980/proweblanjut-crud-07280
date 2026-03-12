@@ -1,7 +1,7 @@
-
 <?php
 include 'connection.php'; 
 
+// Logika untuk menyimpan data kedalam database
 if (isset($_POST['simpan'])) {
 
     $kode     = $_POST['kode_produk'];
@@ -10,13 +10,18 @@ if (isset($_POST['simpan'])) {
     $harga    = $_POST['harga_jual'];
     $stok     = $_POST['stok'];
 
-    $sql = "INSERT INTO produk (kode_produk, nama_produk, kategori, harga_jual, stok) 
-            VALUES ('$kode', '$nama', '$kategori', '$harga', '$stok')";
-
-    if (mysqli_query($connection, $sql)) {
-        header("Location: index.php?status=sukses");
-    } else {
-        echo "Error: " . mysqli_error($koneksi);
+    try {
+        $sql = "INSERT INTO produk (kode_produk, nama_produk, kategori, harga_jual, stok) 
+                VALUES (?, ?, ?, ?, ?)";
+        
+        $stmt = $conn->prepare($sql);
+        
+        if ($stmt->execute([$kode, $nama, $kategori, $harga, $stok])) {
+            header("Location: dashboard.php?status=sukses");
+            exit; 
+        }
+    } catch (PDOException $e) {
+        echo "Gagal menyimpan data: " . $e->getMessage();
     }
 }
 ?>
@@ -46,6 +51,7 @@ if (isset($_POST['simpan'])) {
 </head>
 <body>
 
+<!--FORM PENGISIAN DATA PRODUK -->
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -67,9 +73,11 @@ if (isset($_POST['simpan'])) {
                         <label class="form-label fw-bold">Kategori</label>
                         <select name="kategori" class="form-select" required>
                             <option value="">-- Pilih Kategori --</option>
-                            <option value="Elektronik">Elektronik</option>
-                            <option value="Pakaian">Pakaian</option>
-                            <option value="Alat Tulis">Alat Tulis</option>
+                            <option value="Smartphone">Smartphone</option>
+                            <option value="Laptop">Laptop</option>
+                            <option value="Aksesoris">Aksesoris</option>
+                            <option value="Komponen PC">Komponen PC</option>
+                            <option value="Perangkat Input">Perangkat Input</option>
                             <option value="Lainnya">Lainnya</option>
                         </select>
                     </div>
@@ -87,7 +95,7 @@ if (isset($_POST['simpan'])) {
 
                     <div class="d-grid gap-2 mt-3">
                         <button type="submit" name="simpan" class="btn btn-primary">Simpan Produk</button>
-                        <a href="index.php" class="btn btn-outline-secondary">Batal</a>
+                        <a href="dashboard.php" class="btn btn-outline-secondary">Batal</a>
                     </div>
                 </form>
             </div>
