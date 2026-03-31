@@ -1,47 +1,43 @@
 <?php
-session_start();
+include "connection.php";
 
-include "connection.php"; 
-
-$error = "";
+$message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
-    $password = $_POST["password"];
+    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-    try {
-        $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
-        $stmt->execute([$username]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user) {
-            if (password_verify($password, $user["password"])) {
-                $_SESSION["username"] = $user["username"];
-                header("Location: dashboard.php");
-                exit(); 
-            } else {
-                $error = "Password salah!";
-            }
-        } else {
-            $error = "Username tidak ditemukan!";
-        }
-    } catch (PDOException $e) {
-        $error = "Terjadi kesalahan database: " . $e->getMessage();
+$check_stmt = $conn->prepare("SELECT username FROM users WHERE username = ?");
+$check_stmt->execute([$username]);
+$check_result = $check_stmt->fetch();
+
+if ($check_result) {
+    $message = "Gagal: Username sudah digunakan!";
+} else {
+    
+    $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+    
+    
+    if ($stmt->execute([$username, $password])) {
+        $message = "Registrasi berhasil!";
+    } else {
+        $message = "Gagal mendaftar!";
     }
+}
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Halaman Login</title>
-
-<style>
+    <meta charset="UTF-8">
+    <title>Halaman Registrasi</title>
+    <style>
 
         body {
             font-family: Arial, sans-serif;
-            background: #003366;
+            background:  #003366;
             height: 100vh;
             margin: 0;
             display: flex;
@@ -49,14 +45,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             align-items: center;
         }
 
-        .login-box {
+        .register-box {
             background-color: white;
             padding: 30px;
             border-radius: 8px;
             width: 300px;
         }
 
-        .login-box h2 {
+        .register-box h2 {
             text-align: center;
             margin-top: 0;
             color: #333;
@@ -81,7 +77,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 4px;
         }
 
-
         button {
             width: 100%;
             padding: 10px;
@@ -92,27 +87,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-weight: bold;
         }
 
-        .btn-login {
-            background-color: #007bff;
+        .btn-register {
+            background-color: #28a745; 
             color: white;
         }
 
-        .btn-register {
-            background-color: #e2e8f0; 
+        .btn-back {
+            background-color: #e2e8f0;
             color: #333;
             margin-top: 15px;
+        }
+
+        .msg-info {
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
         }
     </style>
 </head>
 <body>
 
-    <div class="login-box">
-        <h2>Login Ke Sistem</h2>
+    <div class="register-box">
+        <h2>Daftar Akun</h2>
 
-        <?php if (!empty($error)): ?>
-            <p style="color: red; font-size: 14px; text-align: center; margin-top: 0;">
-                <?php echo $error; ?>
-            </p>
+        <?php if ($message): ?>
+            <div class="msg-info">
+                <?php echo $message; ?>
+            </div>
         <?php endif; ?>
 
         <form method="POST" action="">
@@ -126,11 +131,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="password" name="password" required>
             </div>
             
-            <button type="submit" class="btn-login">Login</button>
+            <button type="submit" class="btn-register">Daftar Sekarang</button>
         </form>
 
-        <button type="button" class="btn-register" onclick="window.location.href='register.php'">
-            Daftar Akun Baru
+        <button type="button" class="btn-back" onclick="window.location.href='login.php'">
+            Sudah punya akun? Login
         </button>
     </div>
 
