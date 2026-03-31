@@ -1,5 +1,14 @@
 <?php
+session_start();
+
 include 'connection.php'; 
+
+if (!isset($_SESSION["username"])) {
+
+    header("Location: login.php");
+    exit();
+}
+$namaUser = $_SESSION["username"];
 
 //Logika search bar
 if (isset($_GET['cari']) && !empty($_GET['cari'])) {
@@ -64,6 +73,7 @@ if (isset($_GET['cari']) && !empty($_GET['cari'])) {
 <nav class="navbar navbar-dark mb-5">
     <div class="container">
         <a class="navbar-brand fw-bold" href="index.php">INVENTORY</a>
+        <a class="btn btn-danger" href="logout.php"></i> Logout</a>
     </div>
 </nav>
 
@@ -71,6 +81,8 @@ if (isset($_GET['cari']) && !empty($_GET['cari'])) {
     <div class="row mb-4 align-items-center">
         <div class="col-md-5">
             <h3 class="fw-bold m-0 text-dark">Daftar Stok Produk</h3>
+            <h7>Selamat datang <?php echo htmlspecialchars($namaUser); ?></h7>
+
         </div>
         
         <div class="col-md-7">
