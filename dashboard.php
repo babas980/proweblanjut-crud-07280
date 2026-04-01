@@ -9,6 +9,7 @@ if (!isset($_SESSION["username"])) {
     exit();
 }
 $namaUser = $_SESSION["username"];
+$pesanCookie = isset($_COOKIE["user_login"]) ? " (Data tersimpan di Cookie)" : "";
 
 //Logika search bar
 if (isset($_GET['cari']) && !empty($_GET['cari'])) {
