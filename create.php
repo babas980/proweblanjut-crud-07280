@@ -1,5 +1,13 @@
 <?php
+session_start();
+
 include 'connection.php'; 
+
+if (!isset($_SESSION["username"])) {
+
+    header("Location: login.php");
+    exit();
+}
 
 // Logika untuk menyimpan data kedalam database
 if (isset($_POST['simpan'])) {

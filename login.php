@@ -1,6 +1,13 @@
 <?php
 session_start();
 
+if (!isset($_SESSION["username"]) && isset($_COOKIE["user_login"])) {
+    $_SESSION["username"] = $_COOKIE["user_login"];
+    
+    header("Location: dashboard.php");
+    exit();
+}
+
 include "connection.php"; 
 
 $error = "";
@@ -17,6 +24,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($user) {
             if (password_verify($password, $user["password"])) {
                 $_SESSION["username"] = $user["username"];
+
+                if (isset($_POST['remember'])) {
+                    $nama_user = $user['username']; 
+                    setcookie("user_login", $nama_user, time() + (86400 * 7), "/");
+                } else {
+                    if (isset($_COOKIE['user_login'])) {
+                        setcookie("user_login", "", time() - 3600, "/");
+                    }
+                }
                 header("Location: dashboard.php");
                 exit(); 
             } else {
@@ -38,7 +54,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <title>Halaman Login</title>
 
 <style>
-
         body {
             font-family: Arial, sans-serif;
             background: #003366;
@@ -81,7 +96,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 4px;
         }
 
-
         button {
             width: 100%;
             padding: 10px;
@@ -118,12 +132,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form method="POST" action="">
             <div class="input-group">
                 <label>Username:</label>
-                <input type="text" name="username" required autocomplete="off">
+                <input type="text" name="username" required autocomplete="off" 
+                    value="<?php echo isset($_COOKIE['user_login']) ? htmlspecialchars($_COOKIE['user_login']) : ''; ?>">
             </div>
             
             <div class="input-group">
                 <label>Password:</label>
                 <input type="password" name="password" required>
+            </div>
+
+            <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 5px;">
+                <input type="checkbox" name="remember" id="remember" 
+                    <?php echo isset($_COOKIE['user_login']) ? 'checked' : ''; ?>>
+                <label for="remember" style="font-size: 13px; color: #666; margin: 0; cursor: pointer;">Ingat Saya</label>
             </div>
             
             <button type="submit" class="btn-login">Login</button>
