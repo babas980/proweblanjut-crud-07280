@@ -1,5 +1,13 @@
 <?php
-include 'connection.php';
+session_start();
+
+include 'connection.php'; 
+
+if (!isset($_SESSION["username"])) {
+
+    header("Location: login.php");
+    exit();
+}
 
 // Ambil id dari url 
 if (isset($_GET['id'])) {
