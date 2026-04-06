@@ -71,10 +71,28 @@ if (isset($_GET['cari']) && !empty($_GET['cari'])) {
 </head>
 
 <body>
-<nav class="navbar navbar-dark mb-5">
+<nav class="navbar navbar-expand navbar-dark mb-5">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="index.php">INVENTORY</a>
-        <a class="btn btn-danger" href="logout.php"></i> Logout</a>
+        <a class="navbar-brand fw-bold" href="dashboard.php">INVENTORY</a>
+        
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown profile-dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="text-white small"><?php echo htmlspecialchars($namaUser); ?></span>
+                    <img src="https://ui-avatars.com/api/?name=<?php echo $namaUser; ?>&background=random&color=fff" 
+                         alt="Profile" class="rounded-circle" width="30" height="30">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="navbarDropdown">
+                    <li><h6 class="dropdown-header">Profil Saya</h6></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
     </div>
 </nav>
 
