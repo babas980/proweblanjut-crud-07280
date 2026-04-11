@@ -37,22 +37,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['simpan'])) {
 
     if (empty($errors)) {
 
-        try {
-            $sql = "INSERT INTO produk (kode_produk, nama_produk, kategori, harga_jual, stok) 
-                    VALUES (?, ?, ?, ?, ?)";
+    $target_dir = "uploads/";
+    
+    
+    $ekstensiFile = strtolower(pathinfo($_FILES["gambar"]["name"], PATHINFO_EXTENSION));
+    $namaFileBaru = uniqid() . "." . $ekstensiFile; 
+    $target_file = $target_dir . $namaFileBaru;
+
+    $check = getimagesize($_FILES["gambar"]["tmp_name"]);
+    if ($check === false) {
+        $errors[] = "File yang dipilih bukan gambar.";
+    }
+
+    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+    if (!in_array($ekstensiFile, $allowed)) {
+        $errors[] = "Hanya file JPG, JPEG, PNG & GIF yang diperbolehkan.";
+    }
+
+
+    if (empty($errors)) {
+        // Poin 6d: Pindahkan file
+        if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_file)) {
             
-            $stmt = $conn->prepare($sql);
+            try {
             
-            if ($stmt->execute([$kode, $nama, $kategori, $harga, $stok])) {
+                $sql = "INSERT INTO produk (kode_produk, nama_produk, kategori, harga_jual, stok, gambar) 
+                        VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute([$kode, $nama_barang, $kategori, $harga, $stok, $namaFileBaru]);
+
                 header("Location: dashboard.php?status=sukses");
-                exit; 
+                exit();
+            } catch (PDOException $e) {
+                $errors[] = "Gagal menyimpan ke database: " . $e->getMessage();
             }
-        } catch (PDOException $e) {
-            echo "Gagal menyimpan data: " . $e->getMessage();
+
+        } else {
+            $errors[] = "Terjadi kesalahan saat mengunggah file.";
         }
-        
-        header("Location: dashboard.php");
-        exit();
+    }
     }
 }
 
@@ -132,11 +155,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['simpan'])) {
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Harga Jual</label>
-                            <input type="number" name="harga_jual" class="form-control" placeholder="0" required>
+                            <input type="number" name="harga_jual" class="form-control" placeholder="0" value="<?php echo htmlspecialchars($harga); ?>" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Stok</label>
-                            <input type="number" name="stok" class="form-control" placeholder="0" required>
+                            <input type="number" name="stok" class="form-control" placeholder="0" value="<?php echo htmlspecialchars($stok); ?>" required>
                         </div>
                     </div>
 
