@@ -1,9 +1,9 @@
 <?php
 try {
-    $host     = "localhost";
+    $host     = "192.168.100.218";
     $dbname   = "inventory_pwl";   
-    $username = "root";     
-    $password = "";           
+    $username = "admin_web";     
+    $password = "12345678";           
 
     $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     

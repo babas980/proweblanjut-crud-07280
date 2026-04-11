@@ -9,29 +9,53 @@ if (!isset($_SESSION["username"])) {
     exit();
 }
 
-// Logika untuk menyimpan data kedalam database
-if (isset($_POST['simpan'])) {
+$nama_barang ="";
+$stok ="";
+$harga ="";
+$kode = "";
+$kategori ="";
+$errors=[];
 
-    $kode     = $_POST['kode_produk'];
-    $nama     = $_POST['nama_produk'];
-    $kategori = $_POST['kategori'];
-    $harga    = $_POST['harga_jual'];
-    $stok     = $_POST['stok'];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['simpan'])) {
+    $kode     = trim($_POST['kode_produk']);
+    $nama_barang  = trim($_POST['nama_produk']);
+    $kategori = trim($_POST['kategori']);
+    $harga    = trim($_POST['harga_jual']);
+    $stok     = trim($_POST['stok']);
 
-    try {
-        $sql = "INSERT INTO produk (kode_produk, nama_produk, kategori, harga_jual, stok) 
-                VALUES (?, ?, ?, ?, ?)";
-        
-        $stmt = $conn->prepare($sql);
-        
-        if ($stmt->execute([$kode, $nama, $kategori, $harga, $stok])) {
-            header("Location: dashboard.php?status=sukses");
-            exit; 
+    if (empty($nama_barang)) {
+        $errors[] = "Nama barang tidak boleh kosong.";
+    }
+
+    if (!is_numeric($stok)) {
+        $errors[] = "Jumlah stok harus berupa angka.";
+    }
+    
+    if (!is_numeric($harga)) {
+        $errors[] = "Harga harus berupa angka.";
+    }
+
+    if (empty($errors)) {
+
+        try {
+            $sql = "INSERT INTO produk (kode_produk, nama_produk, kategori, harga_jual, stok) 
+                    VALUES (?, ?, ?, ?, ?)";
+            
+            $stmt = $conn->prepare($sql);
+            
+            if ($stmt->execute([$kode, $nama, $kategori, $harga, $stok])) {
+                header("Location: dashboard.php?status=sukses");
+                exit; 
+            }
+        } catch (PDOException $e) {
+            echo "Gagal menyimpan data: " . $e->getMessage();
         }
-    } catch (PDOException $e) {
-        echo "Gagal menyimpan data: " . $e->getMessage();
+        
+        header("Location: dashboard.php");
+        exit();
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -65,16 +89,31 @@ if (isset($_POST['simpan'])) {
         <div class="col-md-6">
             <div class="card p-4">
                 <h3 class="text-center mb-4 fw-bold">Tambah Produk Baru</h3>
+
+                <?php if (!empty($errors)): ?>
+                    <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border: 1px solid #f5c6cb; margin-bottom: 20px;">
+                        <strong>Terjadi Kesalahan:</strong>
+                        <ul style="margin-top: 5px;">
+                            <?php foreach ($errors as $error): ?>
+                                <li><?php echo $error; ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
                 
-                <form action="" method="POST">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">gambar Produk</label>
+                        <input type="file" name="gambar" class="form-control" placeholder="Pilih gambar yang ingin diupload" value="<?php echo htmlspecialchars($harga); ?>" required>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kode Produk</label>
-                        <input type="text" name="kode_produk" class="form-control" placeholder="Contoh: BRG001" required>
+                        <input type="text" name="kode_produk" class="form-control" placeholder="Contoh: BRG001" value="<?php echo htmlspecialchars($kode); ?>" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nama Produk</label>
-                        <input type="text" name="nama_produk" class="form-control" placeholder="Nama barang..." required>
+                        <input type="text" name="nama_produk" class="form-control" placeholder="Nama barang..." value="<?php echo htmlspecialchars($nama_barang); ?>">
                     </div>
 
                     <div class="mb-3">
