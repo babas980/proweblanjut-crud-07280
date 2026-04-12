@@ -67,6 +67,24 @@ if (isset($_GET['cari']) && !empty($_GET['cari'])) {
         .search-container {
             max-width: 400px;
         }
+        /* Mengecilkan ukuran huruf tabel */
+        .table {
+            font-size: 0.85rem; 
+        }
+
+        /* Mengatur ukuran thumbnail gambar */
+        .img-thumbnail-custom {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* Memastikan kolom aksi tidak terlalu sempit */
+        .btn-group .btn {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+        }
     </style>
 </head>
 
@@ -129,6 +147,7 @@ if (isset($_GET['cari']) && !empty($_GET['cari'])) {
                 <thead class="table-light">
                     <tr>
                         <th width="50">No</th>
+                        <th>gambar</th>
                         <th>Kode</th>
                         <th>Nama Produk</th>
                         <th>Kategori</th>
@@ -144,8 +163,13 @@ if (isset($_GET['cari']) && !empty($_GET['cari'])) {
 
                 if ($stmt->rowCount() > 0) {
                     while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $tampilanGambar = "";
+                        if (!empty($row['gambar'])) {
+                            $tampilanGambar = "<img src='uploads/" . $row['gambar'] . "' width='30' height='30' style='object-fit:cover; border-radius:5px; margin-right:10px;'>";
+                        }
                         echo "<tr>
                                 <td>" . $no++ . "</td>
+                                <td>" . $tampilanGambar . "</td> 
                                 <td><span class='fw-bold'>" . $row['kode_produk'] . "</span></td>
                                 <td>" . $row['nama_produk'] . "</td>
                                 <td>" . $row['kategori'] . "</td>

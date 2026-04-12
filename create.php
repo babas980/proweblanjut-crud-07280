@@ -4,7 +4,6 @@ session_start();
 include 'connection.php'; 
 
 if (!isset($_SESSION["username"])) {
-
     header("Location: login.php");
     exit();
 }
@@ -16,12 +15,14 @@ $kode = "";
 $kategori ="";
 $errors=[];
 
+$namaFileBaru = isset($_POST['gambar_temp']) ? $_POST['gambar_temp'] : "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['simpan'])) {
-    $kode     = trim($_POST['kode_produk']);
-    $nama_barang  = trim($_POST['nama_produk']);
-    $kategori = trim($_POST['kategori']);
-    $harga    = trim($_POST['harga_jual']);
-    $stok     = trim($_POST['stok']);
+    $kode        = trim($_POST['kode_produk']);
+    $nama_barang = trim($_POST['nama_produk']);
+    $kategori    = trim($_POST['kategori']);
+    $harga       = trim($_POST['harga_jual']);
+    $stok        = trim($_POST['stok']);
 
     if (empty($nama_barang)) {
         $errors[] = "Nama barang tidak boleh kosong.";
@@ -35,32 +36,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['simpan'])) {
         $errors[] = "Harga harus berupa angka.";
     }
 
-    if (empty($errors)) {
+    if ($_FILES['gambar']['error'] === 0) {
+        
+        $target_dir = "uploads/";
+        $namaAsli = pathinfo($_FILES["gambar"]["name"], PATHINFO_FILENAME);
+        $ekstensiFile = strtolower(pathinfo($_FILES["gambar"]["name"], PATHINFO_EXTENSION));
+        $namalama = str_replace(' ', '_', $namaAsli);
+        $namaFileBaru_Proses = uniqid() . "_" . $namalama . "." . $ekstensiFile;
+        $target_file = $target_dir . $namaFileBaru_Proses;
 
-    $target_dir = "uploads/";
-    
-    
-    $ekstensiFile = strtolower(pathinfo($_FILES["gambar"]["name"], PATHINFO_EXTENSION));
-    $namaFileBaru = uniqid() . "." . $ekstensiFile; 
-    $target_file = $target_dir . $namaFileBaru;
+        $check = getimagesize($_FILES["gambar"]["tmp_name"]);
+        if ($check === false) {
+            $errors[] = "File yang dipilih bukan gambar.";
+        }
 
-    $check = getimagesize($_FILES["gambar"]["tmp_name"]);
-    if ($check === false) {
-        $errors[] = "File yang dipilih bukan gambar.";
+        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+        if (!in_array($ekstensiFile, $allowed)) {
+            $errors[] = "Hanya file JPG, JPEG, PNG & GIF yang diperbolehkan.";
+        }
+
+        if (empty($errors)) {
+            if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_file)) {
+                $namaFileBaru = $namaFileBaru_Proses;    
+            } else {
+                $errors[] = "Terjadi kesalahan saat mengunggah file.";
+            }
+        }
     }
 
-    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-    if (!in_array($ekstensiFile, $allowed)) {
-        $errors[] = "Hanya file JPG, JPEG, PNG & GIF yang diperbolehkan.";
-    }
-
-
     if (empty($errors)) {
-        // Poin 6d: Pindahkan file
-        if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_file)) {
-            
+        if (empty($namaFileBaru)) {
+            $errors[] = "Silahkan pilih gambar produk.";
+        } else {
             try {
-            
                 $sql = "INSERT INTO produk (kode_produk, nama_produk, kategori, harga_jual, stok, gambar) 
                         VALUES (?, ?, ?, ?, ?, ?)";
                 $stmt = $conn->prepare($sql);
@@ -71,14 +79,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['simpan'])) {
             } catch (PDOException $e) {
                 $errors[] = "Gagal menyimpan ke database: " . $e->getMessage();
             }
-
-        } else {
-            $errors[] = "Terjadi kesalahan saat mengunggah file.";
         }
     }
-    }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -127,7 +130,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['simpan'])) {
                 <form method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label class="form-label fw-bold">gambar Produk</label>
-                        <input type="file" name="gambar" class="form-control" placeholder="Pilih gambar yang ingin diupload" value="<?php echo htmlspecialchars($harga); ?>" required>
+                        <?php if (!empty($namaFileBaru)): ?>
+                            <div class="mb-2">
+                                <img src="uploads/<?php echo $namaFileBaru; ?>" width="100" class="img-thumbnail d-block mb-1">
+                                <input type="hidden" name="gambar_temp" value="<?php echo $namaFileBaru; ?>">
+                            </div>
+                        <?php endif; ?>
+                        <input type="file" name="gambar" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kode Produk</label>
@@ -143,12 +152,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['simpan'])) {
                         <label class="form-label fw-bold">Kategori</label>
                         <select name="kategori" class="form-select" required>
                             <option value="">-- Pilih Kategori --</option>
-                            <option value="Smartphone">Smartphone</option>
-                            <option value="Laptop">Laptop</option>
-                            <option value="Aksesoris">Aksesoris</option>
-                            <option value="Komponen PC">Komponen PC</option>
-                            <option value="Perangkat Input">Perangkat Input</option>
-                            <option value="Lainnya">Lainnya</option>
+                            <option value="Smartphone" <?php echo ($kategori == 'Smartphone') ? 'selected' : ''; ?>>Smartphone</option>
+                            <option value="Laptop" <?php echo ($kategori == 'Laptop') ? 'selected' : ''; ?>>Laptop</option>
+                            <option value="Aksesoris" <?php echo ($kategori == 'Aksesoris') ? 'selected' : ''; ?>>Aksesoris</option>
+                            <option value="Komponen PC" <?php echo ($kategori == 'Komponen PC') ? 'selected' : ''; ?>>Komponen PC</option>
+                            <option value="Perangkat Input" <?php echo ($kategori == 'Perangkat Input') ? 'selected' : ''; ?>>Perangkat Input</option>
+                            <option value="Lainnya" <?php echo ($kategori == 'Lainnya') ? 'selected' : ''; ?>>Lainnya</option>
                         </select>
                     </div>
 
