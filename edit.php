@@ -34,17 +34,35 @@ if (isset($_POST['update'])) {
     $harga    = $_POST['harga_jual'];
     $stok     = $_POST['stok'];
 
+    $namaFileBaru = $data['gambar'];
+
+    if ($_FILES['gambar']['error'] === 0) {
+        $target_dir = "uploads/";
+        $namaAsli = pathinfo($_FILES["gambar"]["name"], PATHINFO_FILENAME);
+        $ekstensiFile = strtolower(pathinfo($_FILES["gambar"]["name"], PATHINFO_EXTENSION));
+
+        $namaFileBaru = uniqid() . "_" . str_replace(' ', '_', $namaAsli) . "." . $ekstensiFile;
+        $target_file = $target_dir . $namaFileBaru;
+
+        if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_file)) {
+            if (!empty($data['gambar']) && file_exists($target_dir . $data['gambar'])) {
+                unlink($target_dir . $data['gambar']);
+            }
+        }
+    }
+
     try {
         $sql = "UPDATE produk SET 
                 kode_produk = ?, 
                 nama_produk = ?, 
                 kategori    = ?, 
                 harga_jual  = ?, 
-                stok        = ? 
+                stok        = ?, 
+                gambar      = ?
                 WHERE id_produk = ?";
         
         $stmt_update = $conn->prepare($sql);
-        $params = [$kode, $nama, $kategori, $harga, $stok, $id];
+        $params = [$kode, $nama, $kategori, $harga, $stok, $namaFileBaru, $id];
         
         if ($stmt_update->execute($params)) {
             header("Location: dashboard.php?status=update_berhasil");
@@ -86,7 +104,18 @@ if (isset($_POST['update'])) {
             <div class="card p-4">
                 <h3 class="text-center mb-4 fw-bold">Edit Produk</h3>
                 
-                <form action="" method="POST">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Gambar Produk</label>
+                        
+                        <?php if (!empty($data['gambar'])): ?>
+                            <div class="mb-2">
+                                <img src="uploads/<?php echo $data['gambar']; ?>" width="100" class="img-thumbnail d-block mb-1">
+                                <small class="text-muted">Gambar saat ini</small>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <input type="file" name="gambar" class="form-control">                    </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kode Produk</label>
                         <input type="text" name="kode_produk" class="form-control" value="<?php echo $data['kode_produk']; ?>" required>
