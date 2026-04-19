@@ -1,6 +1,6 @@
 <?php
 try {
-    $host     = "192.168.100.218";
+    $host     = "localhost";
     $dbname   = "inventory_pwl";   
     $username = "admin_web";     
     $password = "12345678";           

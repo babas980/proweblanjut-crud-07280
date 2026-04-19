@@ -1,0 +1,290 @@
+/* 1. RESET & GLOBAL */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /* Shorthand: weight, size/line-height, family */
+    font: 400 1rem/1.5 'Poppins', sans-serif;
+    background: #f4f7f6;
+    color: #212529;
+}
+
+/* 2. NAVBAR & PROFILE */
+.navbar, 
+.navbar-nav, 
+.nav-link, 
+.dropdown-item {
+    display: flex;
+    align-items: center;
+}
+
+.navbar {
+    background: #003366;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 3rem;
+    justify-content: space-between;
+    color: white;
+}
+
+.navbar-brand {
+    font: 600 1.25rem 'Poppins';
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-nav {
+    list-style: none;
+}
+
+.nav-link {
+    gap: 0.5rem;
+    color: white;
+    text-decoration: none;
+    position: relative;
+}
+
+.profile-img {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+
+/* 3. DROPDOWN */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    min-width: 10rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    border-radius: 0.25rem;
+    padding: 0.5rem 0;
+    z-index: 1000;
+}
+
+.profile-dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-header {
+    padding: 0.5rem 1rem;
+    font: 600 0.875rem 'Poppins';
+    color: #6c757d;
+}
+
+.dropdown-divider {
+    height: 0;
+    margin: 0.5rem 0;
+    border-top: 1px solid #e9ecef;
+    overflow: hidden;
+}
+
+.dropdown-item {
+    gap: 0.5rem;
+    padding: 0.25rem 1rem;
+    color: #212529;
+    text-decoration: none;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+}
+
+/* 4. UTILITIES (Wajib ada !important untuk menimpa gaya lain) */
+.text-danger { color: #dc3545 !important; }
+.text-dark { color: #212529 !important; }
+.text-muted { color: #6c757d !important; }
+.text-white { color: white !important; }
+.fw-bold { font-weight: 600 !important; }
+.align-items-center { align-items: center !important; }
+.mb-4 { margin-bottom: 1.5rem !important; }
+.m-0 { margin: 0 !important; }
+.d-flex { display: flex !important; }
+.justify-content-end { justify-content: flex-end !important; }
+.gap-2 { gap: 0.5rem !important; }
+.text-nowrap { white-space: nowrap !important; }
+.text-center { text-align: center !important; }
+
+/* 5. LAYOUT & GRID */
+.container {
+    width: 100%;
+    padding: 0 15px;
+    margin: 0 auto;
+    max-width: 95%;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.col-kiri, 
+.col-kanan {
+    flex: 0 0 auto;
+    padding: 0 15px;
+}
+
+.col-kiri {
+    width: 41.66%;
+}
+
+.col-kanan {
+    width: 58.33%;
+}
+
+@media (max-width: 768px) {
+    .col-kiri, 
+    .col-kanan {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+/* 6. COMPONENTS (FORM & BTN) */
+.search-container {
+    display: flex;
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font: 400 1rem 'Poppins';
+    color: #212529;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem 0 0 0.25rem;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    font: 400 1rem 'Poppins';
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    border: 1px solid transparent;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-primary {
+    background: #003366;
+    color: #fff;
+    border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.btn-primary:hover {
+    background: #002244;
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+    margin-left: 0.5rem;
+}
+
+.btn-outline-secondary:hover {
+    color: #fff;
+    background: #6c757d;
+}
+
+.btn-success {
+    background: #198754;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: #157347;
+}
+
+/* Tombol Aksi Tabel */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.btn-info { background: #0dcaf0; color: #fff; }
+.btn-warning { background: #ffc107; color: #000; }
+.btn-danger { background: #dc3545; color: #fff; }
+
+.btn-group {
+    display: inline-flex;
+}
+
+.btn-group .btn {
+    border-radius: 0;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+}
+
+.btn-group .btn:first-child {
+    border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.btn-group .btn:last-child {
+    border-radius: 0 0.25rem 0.25rem 0;
+}
+
+/* 7. CARD & TABLE */
+.card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.p-4 { padding: 1.5rem !important; }
+.py-4 { padding: 1.5rem 0 !important; }
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    vertical-align: middle;
+}
+
+.table th, 
+.table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+}
+/* Mengatur ukuran gambar di dalam tabel */
+.img-tabel {
+    width: 40px;            /* Sesuaikan ukuran lebar yang diinginkan */
+    height: 40px;           /* Sesuaikan ukuran tinggi */
+    object-fit: cover;      /* Memastikan gambar tidak gepeng/terdistorsi */
+    border-radius: 5px;     /* Memberikan sedikit lengkungan agar terlihat modern */
+}
+
+.table thead th {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    text-align: left;
+}
+
+.table-hover tbody tr:hover {
+    background: rgba(0, 0, 0, 0.075);
+}
