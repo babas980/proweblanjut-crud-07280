@@ -1,15 +1,13 @@
 <?php
 session_start();
-
 include 'connection.php'; 
 
 if (!isset($_SESSION["username"])) {
-
     header("Location: login.php");
     exit();
 }
 
-// Logika Pengambilan data dari database menggunakan PDO
+// Logika Pengambilan data menggunakan PDO
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
@@ -35,75 +33,63 @@ if (isset($_GET['id'])) {
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Detail Produk - CALT</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { 
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            color: white;
-            display: flex;
-            align-items: center;
-        }
-        .card { 
-            background: rgba(255, 255, 255, 0.95); 
-            color: #333; 
-            border-radius: 15px;
-        }
-        .btn-warning { background-color: #f39c12; border: none; color: white; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Produk - Inventory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
+<body class="body-form">
 
-<body>
-
-<!--Logika untuk menampilkan detail data produk-->
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card p-4">
-                <h3 class="text-center mb-4 fw-bold">Detail Produk</h3>
-                
-                <form action="" method="POST">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Kode Produk</label>
-                        <input type="text" name="kode_produk" class="form-control" value="<?php echo $data['kode_produk']; ?>" readonly>
-                    
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nama Produk</label>
-                        <input type="text" name="nama_produk" class="form-control" value="<?php echo $data['nama_produk']; ?>" readonly>
-                    </div>
-
-                    <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Kategori</label>
-                        <input type="text" class="form-control bg-light" value="<?php echo $data['kategori']; ?>" readonly>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Harga Jual</label>
-                            <input type="number" name="harga_jual" class="form-control" value="<?php echo $data['harga_jual']; ?>" readonly>
-                    </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Tanggal Input</label>
-                        <input type="text" class="form-control bg-light" 
-                            value="<?php echo date('d F Y, H:i', strtotime($data['create_at'])); ?>" readonly>
-                    </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Stok</label>
-                            <input type="number" name="stok" class="form-control" value="<?php echo $data['stok']; ?>" readonly>
-                        </div>
-                    </div>
-
-                    <div class="d-grid gap-2 mt-3">
-                        <a href="dashboard.php" class="btn btn-outline-secondary">Kembali</a>
-                    </div>
-                </form>
-            </div>
+    <div class="card-form">
+        <h3 class="text-center mb-4 fw-bold">Detail Data Produk</h3>
+        
+        <div class="mb-4 text-center">
+            <?php if (!empty($data['gambar'])): ?>
+                <img src="uploads/<?php echo htmlspecialchars($data['gambar']); ?>" class="img-preview" style="width: 150px; height: 150px; margin: 0 auto;">
+            <?php else: ?>
+                <div class="text-muted small">Tidak ada gambar</div>
+            <?php endif; ?>
         </div>
+
+        <form>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Kode Produk</label>
+                <input type="text" class="form-control" value="<?php echo htmlspecialchars($data['kode_produk']); ?>" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nama Produk</label>
+                <input type="text" class="form-control" value="<?php echo htmlspecialchars($data['nama_produk']); ?>" readonly>
+            </div>
+
+            <div class="row">
+                <div class="col-kiri mb-3">
+                    <label class="form-label fw-bold">Kategori</label>
+                    <input type="text" class="form-control" value="<?php echo htmlspecialchars($data['kategori']); ?>" readonly>
+                </div>
+                <div class="col-kanan mb-3">
+                    <label class="form-label fw-bold">Harga Jual</label>
+                    <input type="text" class="form-control" value="Rp <?php echo number_format($data['harga_jual'], 0, ',', '.'); ?>" readonly>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-kiri mb-3">
+                    <label class="form-label fw-bold">Stok</label>
+                    <input type="text" class="form-control" value="<?php echo htmlspecialchars($data['stok']); ?> Unit" readonly>
+                </div>
+                <div class="col-kanan mb-3">
+                    <label class="form-label fw-bold">Tanggal Input</label>
+                    <input type="text" class="form-control" value="<?php echo date('d F Y', strtotime($data['create_at'])); ?>" readonly>
+                </div>
+            </div>
+
+            <div class="button-group-area">
+                <a href="edit.php?id=<?php echo $data['id_produk']; ?>" class="btn-update" style="text-align: center; text-decoration: none;">Edit Produk</a>
+                <a href="dashboard.php" class="btn-batal">Kembali ke Dashboard</a>
+            </div>
+        </form>
     </div>
 </div>
 

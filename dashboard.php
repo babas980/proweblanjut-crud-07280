@@ -70,7 +70,7 @@ if (isset($_GET['cari']) && !empty($_GET['cari'])) {
     <div class="row mb-4 align-items-center">
         <div class="col-kiri">
             <h3 class="fw-bold m-0 text-dark">Daftar Stok Produk</h3>
-            <h6>Selamat datang <?php echo htmlspecialchars($namaUser); ?></h6>
+            <h5>Selamat datang <?php echo htmlspecialchars($namaUser); ?></h5>
         </div>
         
         <div class="col-kanan">
