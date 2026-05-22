@@ -122,12 +122,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['simpan'])) {
         <form method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label">Gambar Produk</label>
-                <?php if (!empty($namaFileBaru)): ?>
-                    <div class="mb-2">
-                        <img src="uploads/<?php echo $namaFileBaru; ?>" class="img-preview">
-                        <input type="hidden" name="gambar_temp" value="<?php echo $namaFileBaru; ?>">
-                    </div>
-                <?php endif; ?>
                 <input type="file" name="gambar" class="form-control">
             </div>
 

@@ -8,7 +8,6 @@ if (!isset($_SESSION["username"])) {
     exit();
 }
 $namaUser = $_SESSION["username"];
-$pesanCookie = isset($_COOKIE["user_login"]) ? " (Data tersimpan di Cookie)" : "";
 
 //Logika search bar
 if (isset($_GET['cari']) && !empty($_GET['cari'])) {
@@ -115,7 +114,7 @@ if (isset($_GET['cari']) && !empty($_GET['cari'])) {
                     while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $tampilanGambar = "";
                         if (!empty($row['gambar'])) {
-                            $tampilanGambar = "<img src='uploads/" . htmlspecialchars($row['gambar']) . "' style='width: 50px; height: 50px; object-fit:cover; border-radius:8px;'>";
+                            $tampilanGambar = "<img src='uploads/" . htmlspecialchars($row['gambar']) . "' style='width: 30px; height: 30px; object-fit:cover; border-radius:5px;'>";
                         }
                         echo "<tr>
                                 <td>" . $no++ . "</td>
