@@ -1,4 +1,7 @@
 <?php
+
+session_start();
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -14,7 +17,8 @@ switch ($page) {
         break;
 
     case 'login':
-        include '../app/views/auth/login.php';
+        require_once __DIR__ . '/../app/Controllers/AuthController.php';
+        login($conn); // <-- PASTIKAN ADA $conn DI DALAM SINI
         break;
 
     case 'register':
@@ -28,7 +32,11 @@ switch ($page) {
         break;
 
     case 'dashboard':
-        include '../app/views/produk/index.php';
+        // 1. Panggil file controllernya terlebih dahulu
+        require_once __DIR__ . '/../app/Controllers/ProdukController.php';
+        
+        // 2. Jalankan fungsinya sambil mengoper variabel koneksi database ($conn)
+        tampilDashboard($conn);
         break;
 
     case 'tambah_produk':

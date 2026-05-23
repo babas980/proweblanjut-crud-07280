@@ -38,11 +38,11 @@ function login($conn) {
         exit();
     }
 
-    if (!isset($_SESSION["username"]) && isset($_COOKIE["user_login"])) {
-        $_SESSION["username"] = $_COOKIE["user_login"];
-        header("Location: index.php?url=dashboard");
-        exit();
-    }
+//    if (!isset($_SESSION["username"]) && isset($_COOKIE["user_login"])) {
+  //      $_SESSION["username"] = $_COOKIE["user_login"];
+    //    header("Location: index.php?url=dashboard");
+      //  exit();
+    //}
 
     $error = "";
 
