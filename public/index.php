@@ -18,7 +18,7 @@ switch ($page) {
 
     case 'login':
         require_once __DIR__ . '/../app/Controllers/AuthController.php';
-        login($conn); // <-- PASTIKAN ADA $conn DI DALAM SINI
+        login($conn); 
         break;
 
     case 'register':
@@ -32,19 +32,38 @@ switch ($page) {
         break;
 
     case 'dashboard':
-        // 1. Panggil file controllernya terlebih dahulu
         require_once __DIR__ . '/../app/Controllers/ProdukController.php';
-        
-        // 2. Jalankan fungsinya sambil mengoper variabel koneksi database ($conn)
-        tampilDashboard($conn);
+        index($conn);
         break;
 
     case 'tambah_produk':
-        include '../app/views/produk/create.php';
+        require_once __DIR__ . '/../app/Controllers/ProdukController.php';
+        create();
+        break;
+
+    case 'simpan_produk':
+        require_once __DIR__ . '/../app/Controllers/ProdukController.php';
+        store($conn); 
+        break;
+
+    case 'detail_produk':
+        require_once __DIR__ . '/../app/Controllers/ProdukController.php';
+        read($conn); 
         break;
 
     case 'edit_produk':
-        include '../app/views/produk/edit.php';
+        require_once __DIR__ . '/../app/Controllers/ProdukController.php';
+        edit($conn); 
+        break;
+
+    case 'update_produk':
+        require_once __DIR__ . '/../app/Controllers/ProdukController.php';
+        update($conn);
+        break;
+
+    case 'hapus_produk':
+        require_once __DIR__ . '/../app/Controllers/ProdukController.php';
+        destroy($conn);
         break;
 
     default:

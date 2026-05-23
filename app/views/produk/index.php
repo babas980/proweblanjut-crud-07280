@@ -85,7 +85,6 @@
                     while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $tampilanGambar = "";
                         if (!empty($row['gambar'])) {
-                            // Jalur gambar disesuaikan mengambil dari folder public/uploads atau root uploads
                             $tampilanGambar = "<img src='../uploads/" . htmlspecialchars($row['gambar']) . "' style='width: 30px; height: 30px; object-fit:cover; border-radius:5px;'>";
                         }
                         echo "<tr>
