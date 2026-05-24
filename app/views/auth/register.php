@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Halaman Registrasi</title>
-    <link rel="stylesheet" href="../assets/css/auth.css">
+    <link rel="stylesheet" href="../public/assets/css/auth.css">
 </head>
 <body>
 

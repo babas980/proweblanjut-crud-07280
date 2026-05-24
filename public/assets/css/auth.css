@@ -62,7 +62,6 @@ button {
     margin-top: 15px;
 }
 
-/* Tambahan class khusus untuk tombol register saat di halaman register agar warnanya tetap hijau seperti kodemu yang dulu */
 .btn-register-submit {
     background-color: #28a745; 
     color: white;

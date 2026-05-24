@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../models/Produk.php';
+require_once __DIR__ . '/../models/BarangModel.php';
 
 function index($conn) {
     if (!isset($_SESSION["username"])) { header("Location: index.php?url=login"); exit(); }
