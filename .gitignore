@@ -1,0 +1,33 @@
+# ==========================================
+# 1. KREDENSIAL & KONFIGURASI LOKAL (SANGAT PENTING)
+# ==========================================
+# Abaikan file konfigurasi yang berisi password database asli
+config/database.php
+.env
+
+# ==========================================
+# 2. FILE SAMPAH SISTEM OPERASI
+# ==========================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ==========================================
+# 3. FOLDER EDITOR / IDE (VS CODE)
+# ==========================================
+.vscode/
+*.code-workspace
+.idea/
+
+# ==========================================
+# 4. DEPENDENCY & LOGS
+# ==========================================
+vendor/
+*.log
