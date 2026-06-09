@@ -32,7 +32,6 @@ function register($conn) {
 // 2. FUNGSI LOGIN
 // ==========================================
 function login($conn) {
-    // Cek Proteksi Session & Cookie sebelum form diisi
     if (isset($_SESSION["username"])) {
         header("Location: index.php?url=dashboard");
         exit();
@@ -57,6 +56,11 @@ function login($conn) {
             if ($user) {
                 if (password_verify($password, $user["password"])) {
                     $_SESSION["username"] = $user["username"];
+
+                    if (password_needs_rehash($user["password"], PASSWORD_DEFAULT)) {
+                        $newHash = password_hash($password, PASSWORD_DEFAULT);
+                        updatePasswordUser($conn, $user["username"], $newHash);
+                    }
 
                     if (isset($_POST['remember'])) {
                         setcookie("user_login", $user['username'], time() + (86400 * 7), "/");

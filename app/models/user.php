@@ -17,4 +17,13 @@ function getUserByUsername($conn, $username) {
     $stmt->execute([$username]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+function updatePasswordUser($conn, $username, $passwordBaru) {
+    $sql = "UPDATE users SET password = :password WHERE username = :username";
+    $stmt = $conn->prepare($sql);
+    return $stmt->execute([
+        ':password' => $passwordBaru,
+        ':username' => $username
+    ]);
+}
 ?>
